@@ -25,11 +25,58 @@
  */
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        /** Solution 1: Use recursive method to find out the LCA
         if (root == p || root == q || root == null) return root;
         TreeNode left = lowestCommonAncestor(root.left, p, q);
         TreeNode right = lowestCommonAncestor(root.right, p, q);
         if (left != null && right != null) return root;
         if (left == null) return right;
         else return left;
+        **/
+        
+        /** Solution 2: Use DFS to find the path from root to target node and compare the paths
+         * And find out the LCA
+         **/ 
+        List<TreeNode> pathP = new ArrayList<>();
+        List<TreeNode> pathQ = new ArrayList<>();
+        pathP.add(root);
+        pathQ.add(root);
+        dfs(root, p, pathP);
+        dfs(root, q, pathQ);
+        int k = 0;
+        while (k < pathP.size() && k < pathQ.size() && pathP.get(k) == pathQ.get(k)) {
+            k++;
+        }
+        return pathP.get(k-1);
+    }
+
+    private boolean dfs(TreeNode node, TreeNode target, List<TreeNode> path) {
+        /** Skip the root **/
+        if (node == null) return false;
+        if (node == target) return true;
+        
+        if (node.left != null) {
+            path.add(node.left);
+            if (dfs(node.left, target, path)) {
+                return true;
+            }
+            path.remove(path.size() - 1);
+        }
+        
+        if (node.right != null) {
+            path.add(node.right);
+            if (dfs(node.right, target, path)) {
+                return true;
+            }
+            path.remove(path.size() - 1);
+        }
+        
+        return false;
     }
 }
+
+
+
+
+
+
